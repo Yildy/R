@@ -1,6 +1,4 @@
-from datetime import datetime, timezone
 from config import db
-from models.datos_personales import DatosPersonales  # Importar el modelo relacionado
 
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
@@ -10,7 +8,7 @@ class Usuario(db.Model):
     contraseña = db.Column(db.String(255), nullable=False)
     nombre_usuario = db.Column(db.String(100), nullable=False)
     verificado = db.Column(db.Boolean, default=False)
-    fecha_registro = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    fecha_registro = db.Column(db.DateTime, default=db.func.now()) 
 
     # Relación uno a uno con DatosPersonales
     datos_personales = db.relationship('DatosPersonales', backref='usuario', uselist=False)
