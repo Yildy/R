@@ -9,4 +9,3 @@ class DatosPersonales(db.Model):
     apellido = db.Column(db.String(100), nullable=False)
     telefono = db.Column(db.String(20))
     fecha_nacimiento = db.Column(db.Date)
-
