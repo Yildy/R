@@ -1,6 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from config import db
 
 class Comentario(db.Model):
     __tablename__ = 'comentarios'
