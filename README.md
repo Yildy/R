@@ -1,7 +1,5 @@
 # Proyecto Residuos
 
-## Hola Mundo!
-
 ## Requisitos
 - Python 3.8 o superior
 - Virtualenv configurado
