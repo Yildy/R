@@ -4,9 +4,9 @@ from config import db
 from models.reacciones import Reaccion
 from datetime import datetime
 
-reacciones_bp = Blueprint('reacciones', __name__)
+reacciones = Blueprint('reacciones', __name__)
 
-@reacciones_bp.route('/reacciones', methods=['POST'])
+@reacciones.route('/reacciones', methods=['POST'])
 @jwt_required()
 def crear_reaccion():
     user_id = get_jwt_identity()
@@ -38,7 +38,7 @@ def crear_reaccion():
         db.session.commit()
         return jsonify({'mensaje': 'Reacción creada correctamente', 'id': nueva_reaccion.id, 'estado': nueva_reaccion.estadoreaccion}), 201
 
-@reacciones_bp.route('/reacciones/<int:reaccion_id>', methods=['GET'])
+@reacciones.route('/reacciones/<int:reaccion_id>', methods=['GET'])
 def obtener_reaccion(reaccion_id):
     reaccion = Reaccion.query.get(reaccion_id)
     if not reaccion:
@@ -52,7 +52,7 @@ def obtener_reaccion(reaccion_id):
         'estadoreaccion': reaccion.estadoreaccion
     }), 200
 
-@reacciones_bp.route('/reacciones/<int:reaccion_id>', methods=['PUT'])
+@reacciones.route('/reacciones/<int:reaccion_id>', methods=['PUT'])
 @jwt_required()
 def actualizar_reaccion(reaccion_id):
     user_id = get_jwt_identity()
@@ -72,7 +72,7 @@ def actualizar_reaccion(reaccion_id):
     else:
         return jsonify({'error': 'No se proporcionaron datos para actualizar'}), 400
 
-@reacciones_bp.route('/reacciones/<int:reaccion_id>', methods=['DELETE'])
+@reacciones.route('/reacciones/<int:reaccion_id>', methods=['DELETE'])
 @jwt_required()
 def eliminar_reaccion(reaccion_id):
     user_id = get_jwt_identity()
@@ -87,7 +87,7 @@ def eliminar_reaccion(reaccion_id):
     db.session.commit()
     return jsonify({'mensaje': 'Reacción eliminada correctamente'}), 200
 
-@reacciones_bp.route('/publicaciones/<int:publicacion_id>/reacciones', methods=['GET'])
+@reacciones.route('/publicaciones/<int:publicacion_id>/reacciones', methods=['GET'])
 def obtener_reacciones_por_publicacion(publicacion_id):
     reacciones = Reaccion.query.filter_by(publicacion_id=publicacion_id).all()
     resultados = []
@@ -100,7 +100,7 @@ def obtener_reacciones_por_publicacion(publicacion_id):
         })
     return jsonify(resultados), 200
 
-@reacciones_bp.route('/publicaciones/<int:publicacion_id>/reacciones/count', methods=['GET'])
+@reacciones.route('/publicaciones/<int:publicacion_id>/reacciones/count', methods=['GET'])
 def contar_reacciones_por_publicacion(publicacion_id):
     count = Reaccion.query.filter_by(publicacion_id=publicacion_id, estadoreaccion=True).count()
     return jsonify({'count': count}), 200

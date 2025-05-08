@@ -4,9 +4,9 @@ from config import db
 from models.publicaciones import Publicacion
 from datetime import datetime
 
-publicaciones_bp = Blueprint('publicaciones', __name__)
+publicaciones = Blueprint('publicaciones', __name__)
 
-@publicaciones_bp.route('/publicaciones', methods=['POST'])
+@publicaciones.route('/publicaciones', methods=['POST'])
 @jwt_required()
 def crear_publicacion():
     user_id = get_jwt_identity()
@@ -35,7 +35,7 @@ def crear_publicacion():
 
     return jsonify({'mensaje': 'Publicación creada correctamente', 'id': nueva_publicacion.id}), 201
 
-@publicaciones_bp.route('/publicaciones', methods=['GET'])
+@publicaciones.route('/publicaciones', methods=['GET'])
 def obtener_publicaciones():
     publicaciones = Publicacion.query.all()
     resultados = []
@@ -50,7 +50,7 @@ def obtener_publicaciones():
         })
     return jsonify(resultados), 200
 
-@publicaciones_bp.route('/publicaciones/<int:publicacion_id>', methods=['GET'])
+@publicaciones.route('/publicaciones/<int:publicacion_id>', methods=['GET'])
 def obtener_publicacion(publicacion_id):
     publicacion = Publicacion.query.get(publicacion_id)
     if not publicacion:
@@ -65,7 +65,7 @@ def obtener_publicacion(publicacion_id):
         'imageurl': publicacion.imageurl
     }), 200
 
-@publicaciones_bp.route('/publicaciones/<int:publicacion_id>', methods=['PUT'])
+@publicaciones.route('/publicaciones/<int:publicacion_id>', methods=['PUT'])
 @jwt_required()
 def actualizar_publicacion(publicacion_id):
     user_id = get_jwt_identity()
@@ -92,7 +92,7 @@ def actualizar_publicacion(publicacion_id):
     db.session.commit()
     return jsonify({'mensaje': 'Publicación actualizada correctamente', 'id': publicacion.id}), 200
 
-@publicaciones_bp.route('/publicaciones/<int:publicacion_id>', methods=['DELETE'])
+@publicaciones.route('/publicaciones/<int:publicacion_id>', methods=['DELETE'])
 @jwt_required()
 def eliminar_publicacion(publicacion_id):
     user_id = get_jwt_identity()

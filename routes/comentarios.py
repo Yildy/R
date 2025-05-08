@@ -7,10 +7,9 @@ from datetime import datetime
 comentarios = Blueprint('comentarios', __name__)
 
 @comentarios.route('/comentarios', methods=['POST'])
-@jwt_required()
 def crear_comentario():
-    user_id = get_jwt_identity()
     data = request.get_json()
+    user_id = data.get('user_id')
     publicacion_id = data.get('publicacion_id')
     contenido = data.get('contenido')
 
@@ -30,11 +29,12 @@ def crear_comentario():
 
     return jsonify({'mensaje': 'Comentario creado correctamente', 'id': nuevo_comentario.id}), 201
 
-@comentarios_bp.route('/comentarios/<int:comentario_id>', methods=['GET'])
+@comentarios.route('/mensajes/<int:comentario_id>', methods=['GET'])
 def obtener_comentario(comentario_id):
     comentario = Comentario.query.get(comentario_id)
+    print(comentario)
     if not comentario:
-        return jsonify({'error': 'Comentario no encontrado'}), 404
+        return jsonify({'error': 'Comentario no encontrado'}), 500
 
     return jsonify({
         'id': comentario.id,
@@ -44,8 +44,8 @@ def obtener_comentario(comentario_id):
         'fecha': str(comentario.fecha)
     }), 200
 
-@comentarios_bp.route('/comentarios/<int:comentario_id>', methods=['PUT'])
-@jwt_required()
+
+@comentarios.route('/comentarios/<int:comentario_id>', methods=['PUT'])
 def actualizar_comentario(comentario_id):
     user_id = get_jwt_identity()
     comentario = Comentario.query.get(comentario_id)
@@ -64,8 +64,7 @@ def actualizar_comentario(comentario_id):
     else:
         return jsonify({'error': 'No se proporcionaron datos para actualizar'}), 400
 
-@comentarios_bp.route('/comentarios/<int:comentario_id>', methods=['DELETE'])
-@jwt_required()
+@comentarios.route('/comentarios/<int:comentario_id>', methods=['DELETE'])
 def eliminar_comentario(comentario_id):
     user_id = get_jwt_identity()
     comentario = Comentario.query.get(comentario_id)
@@ -80,7 +79,7 @@ def eliminar_comentario(comentario_id):
     db.session.commit()
     return jsonify({'mensaje': 'Comentario eliminado correctamente'}), 200
 
-@comentarios_bp.route('/publicaciones/<int:publicacion_id>/comentarios', methods=['GET'])
+@comentarios.route('/publicaciones/<int:publicacion_id>/comentarios', methods=['GET'])
 def obtener_comentarios_por_publicacion(publicacion_id):
     comentarios = Comentario.query.filter_by(publicacion_id=publicacion_id).all()
     resultados = []
