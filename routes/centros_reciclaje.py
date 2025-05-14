@@ -46,13 +46,13 @@ def crear_centro():
     return jsonify({'mensaje': 'Centro de reciclaje creado exitosamente'}), 201
 
 # Ruta para actualizar un centro de reciclaje
-@centros_reciclaje_bp.route('/centros_reciclaje/<int:id>', methods=['PUT'])
-def actualizar_centro(id):
-    data = request.get_json()
-    centro = CentroDeReciclaje.query.get(id)
+@centros_reciclaje_bp.route('/centros_reciclaje/<int:centro_id>', methods=['PUT'])
+def actualizar_centro(centro_id):
+    centro = CentroDeReciclaje.query.get(centro_id)
     if not centro:
         return jsonify({'error': 'Centro de reciclaje no encontrado'}), 404
 
+    data = request.get_json()
     centro.nombre = data.get('nombre', centro.nombre)
     centro.usuario_id = data.get('usuario_id', centro.usuario_id)
     centro.direccion = data.get('direccion', centro.direccion)
@@ -62,15 +62,3 @@ def actualizar_centro(id):
     db.session.commit()
 
     return jsonify({'mensaje': 'Centro de reciclaje actualizado exitosamente'}), 200
-
-# Ruta para eliminar un centro de reciclaje
-@centros_reciclaje_bp.route('/centros_reciclaje/<int:id>', methods=['DELETE'])
-def eliminar_centro(id):
-    centro = CentroDeReciclaje.query.get(id)
-    if not centro:
-        return jsonify({'error': 'Centro de reciclaje no encontrado'}), 404
-
-    db.session.delete(centro)
-    db.session.commit()
-
-    return jsonify({'mensaje': 'Centro de reciclaje eliminado exitosamente'}), 200
