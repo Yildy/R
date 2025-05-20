@@ -47,7 +47,7 @@ def registrar_usuario():
     return jsonify({'mensaje': 'Registro exitoso'}), 201
 
 
-@acceso.route('/perfil', methods=['GET'])
+@acceso.route('/usuario/perfil', methods=['GET'])
 @jwt_required()
 def perfil_usuario():
     user_id = get_jwt_identity()
