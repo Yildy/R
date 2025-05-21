@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 acceso = Blueprint('login', __name__)
 
-@acceso.route('/acceso', methods=['POST'])
+@acceso.route('/usuario/acceso', methods=['POST'])
 def login_usuario():
     data = request.get_json()
     correo = data.get('correo')
@@ -26,7 +26,7 @@ def login_usuario():
         }
     }), 200
 
-@acceso.route('/registro', methods=['POST'])
+@acceso.route('/usuario/registro', methods=['POST'])
 def registrar_usuario():
     data = request.get_json()
     correo = data.get('correo')
@@ -47,7 +47,7 @@ def registrar_usuario():
     return jsonify({'mensaje': 'Registro exitoso'}), 201
 
 
-@acceso.route('/perfil', methods=['GET'])
+@acceso.route('/usuario/perfil', methods=['GET'])
 @jwt_required()
 def perfil_usuario():
     user_id = get_jwt_identity()
