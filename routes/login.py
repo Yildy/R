@@ -53,7 +53,7 @@ def perfil_usuario():
     user_id = get_jwt_identity()
     usuario = Usuario.query.get(user_id)
     if not usuario:
-        return jsonify({'error': 'Usuario no encontrado'}), 404
+        return jsonify({'error': 'Usuario no encontrado'}), 404 
 
     return jsonify({
         'id': usuario.id,
