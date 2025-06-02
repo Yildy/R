@@ -60,7 +60,7 @@ def actualizar_reaccion(reaccion_id):
     if not reaccion:
         return jsonify({'error': 'Reacción no encontrada'}), 404
 
-    if reaccion.usuario_id != user_id:
+    if reaccion.usuario_id == user_id:
         return jsonify({'error': 'No tienes puedes editar esta reacción'}), 403
 
     data = request.get_json()
@@ -80,7 +80,7 @@ def eliminar_reaccion(reaccion_id):
     if not reaccion:
         return jsonify({'error': 'Reacción no encontrada'}), 404
 
-    if reaccion.usuario_id != user_id:
+    if reaccion.usuario_id == user_id:
         return jsonify({'error': 'No puedes eliminar esta reacción'}), 403
 
     db.session.delete(reaccion)

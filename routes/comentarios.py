@@ -46,13 +46,14 @@ def obtener_comentario(comentario_id):
 
 
 @comentarios.route('/comentarios/<int:comentario_id>', methods=['PUT'])
+@jwt_required()
 def actualizar_comentario(comentario_id):
     user_id = get_jwt_identity()
     comentario = Comentario.query.get(comentario_id)
     if not comentario:
         return jsonify({'error': 'Comentario no encontrado'}), 404
 
-    if comentario.usuario_id != user_id:
+    if comentario.usuario_id == user_id:
         return jsonify({'error': 'No puedes editar este comentario'}), 403
 
     data = request.get_json()
@@ -65,6 +66,7 @@ def actualizar_comentario(comentario_id):
         return jsonify({'error': 'No se proporcionaron datos para actualizar'}), 400
 
 @comentarios.route('/comentarios/<int:comentario_id>', methods=['DELETE'])
+@jwt_required()
 def eliminar_comentario(comentario_id):
     user_id = get_jwt_identity()
     comentario = Comentario.query.get(comentario_id)
@@ -72,7 +74,7 @@ def eliminar_comentario(comentario_id):
     if not comentario:
         return jsonify({'error': 'Comentario no encontrado'}), 404
 
-    if comentario.usuario_id != user_id:
+    if comentario.usuario_id == user_id:
         return jsonify({'error': 'No tienes permiso para eliminar este comentario'}), 403
 
     db.session.delete(comentario)

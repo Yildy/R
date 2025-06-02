@@ -15,7 +15,7 @@ def login_usuario():
     if not usuario or not bcrypt.check_password_hash(usuario.contraseña, contraseña):
         return jsonify({'error': 'Credenciales inválidas'}), 401
 
-    access_token = create_access_token(identity=usuario.id)
+    access_token = create_access_token(identity=str(usuario.id))
     return jsonify({
         'mensaje': 'Login exitoso',
         'token': access_token,
@@ -46,15 +46,17 @@ def registrar_usuario():
 
     return jsonify({'mensaje': 'Registro exitoso'}), 201
 
-
-@acceso.route('/usuario/perfil', methods=['GET'])
+@acceso.route('/perfil', methods=['GET'])
 @jwt_required()
 def perfil_usuario():
-    user_id = get_jwt_identity()
+    # Extraer el user_id del token JWT
+    user_id = int(get_jwt_identity())
+    # Buscar al usuario en la base de datos
     usuario = Usuario.query.get(user_id)
     if not usuario:
-        return jsonify({'error': 'Usuario no encontrado'}), 404 
+        return jsonify({'error': 'Usuario no encontrado'}), 404
 
+    # Retornar la información del perfil del usuario
     return jsonify({
         'id': usuario.id,
         'correo': usuario.correo,
@@ -62,3 +64,34 @@ def perfil_usuario():
         'verificado': usuario.verificado,
         'fecha_registro': usuario.fecha_registro
     }), 200
+
+@acceso.route('/usuario/actualizar', methods=['PUT'])
+@jwt_required()
+def actualizar_usuario():
+    user_id = int(get_jwt_identity())  # Obtener el ID del usuario desde el token JWT
+    usuario = Usuario.query.get(user_id)
+    if not usuario:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    data = request.get_json()
+    if 'correo' in data:
+        usuario.correo = data['correo']
+    if 'nombre_usuario' in data:
+        usuario.nombre_usuario = data['nombre_usuario']
+    if 'contraseña' in data:
+        usuario.contraseña = bcrypt.generate_password_hash(data['contraseña']).decode('utf-8')
+
+    db.session.commit()
+    return jsonify({'mensaje': 'Usuario actualizado correctamente'}), 200
+
+@acceso.route('/usuario/eliminar', methods=['DELETE'])
+@jwt_required()
+def eliminar_usuario():
+    user_id = int(get_jwt_identity())  # Obtener el ID del usuario desde el token JWT
+    usuario = Usuario.query.get(user_id)
+    if not usuario:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    db.session.delete(usuario)
+    db.session.commit()
+    return jsonify({'mensaje': 'Usuario eliminado correctamente'}), 200

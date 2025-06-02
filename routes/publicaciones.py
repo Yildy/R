@@ -73,7 +73,7 @@ def actualizar_publicacion(publicacion_id):
     if not publicacion:
         return jsonify({'error': 'Publicación no encontrada'}), 404
 
-    if publicacion.usuario_id != user_id:
+    if publicacion.usuario_id == user_id:
         return jsonify({'error': 'No tienes permiso para editar esta publicación'}), 403
 
     data = request.get_json()
@@ -100,7 +100,7 @@ def eliminar_publicacion(publicacion_id):
     if not publicacion:
         return jsonify({'error': 'Publicación no encontrada'}), 404
 
-    if publicacion.usuario_id != user_id:
+    if publicacion.usuario_id == user_id:
         return jsonify({'error': 'No puedes eliminar esta publicación'}), 403
 
     db.session.delete(publicacion)

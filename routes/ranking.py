@@ -54,3 +54,16 @@ def actualizar_ranking(ranking_id):
     db.session.commit()
 
     return jsonify({'mensaje': 'Ranking actualizado exitosamente'}), 200
+
+# Ruta para eliminar un ranking
+@ranking_bp.route('/ranking/<int:id>', methods=['DELETE'])
+def eliminar_ranking(ranking_id):
+    # Buscar el registro de ranking por ID
+    ranking = Ranking.query.get(ranking_id)
+    if not ranking:
+        return jsonify({'error': 'Registro de ranking no encontrado'}), 404
+
+    # Eliminar el registro de ranking
+    db.session.delete(ranking)
+    db.session.commit()
+    return jsonify({'mensaje': 'Registro de ranking eliminado correctamente'}), 200
