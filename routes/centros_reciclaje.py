@@ -62,3 +62,16 @@ def actualizar_centro(centro_id):
     db.session.commit()
 
     return jsonify({'mensaje': 'Centro de reciclaje actualizado exitosamente'}), 200
+
+# Ruta para eliminar un centro de reciclaje
+@centros_reciclaje_bp.route('/centros_reciclaje/<int:id>', methods=['DELETE'])
+def eliminar_centro(id):
+    # Buscar el centro de reciclaje por ID
+    centro = CentroDeReciclaje.query.get(id)
+    if not centro:
+        return jsonify({'error': 'Centro de reciclaje no encontrado'}), 404
+
+    # Eliminar el centro de reciclaje
+    db.session.delete(centro)
+    db.session.commit()
+    return jsonify({'mensaje': 'Centro de reciclaje eliminado correctamente'}), 200
