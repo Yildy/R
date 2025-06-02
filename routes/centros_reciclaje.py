@@ -65,9 +65,9 @@ def actualizar_centro(centro_id):
 
 # Ruta para eliminar un centro de reciclaje
 @centros_reciclaje_bp.route('/centros_reciclaje/<int:id>', methods=['DELETE'])
-def eliminar_centro(id):
+def eliminar_centro(centro_id):
     # Buscar el centro de reciclaje por ID
-    centro = CentroDeReciclaje.query.get(id)
+    centro = CentroDeReciclaje.query.get(centro_id)
     if not centro:
         return jsonify({'error': 'Centro de reciclaje no encontrado'}), 404
 
