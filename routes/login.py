@@ -15,7 +15,7 @@ def login_usuario():
     if not usuario or not bcrypt.check_password_hash(usuario.contraseña, contraseña):
         return jsonify({'error': 'Credenciales inválidas'}), 401
 
-    access_token = create_access_token(identity=usuario.id)
+    access_token = create_access_token(identity=str(usuario.id))
     return jsonify({
         'mensaje': 'Login exitoso',
         'token': access_token,
@@ -46,15 +46,17 @@ def registrar_usuario():
 
     return jsonify({'mensaje': 'Registro exitoso'}), 201
 
-
-@acceso.route('/usuario/perfil', methods=['GET'])
+@acceso.route('/perfil', methods=['GET'])
 @jwt_required()
 def perfil_usuario():
-    user_id = get_jwt_identity()
+    # Extraer el user_id del token JWT
+    user_id = int(get_jwt_identity())
+    # Buscar al usuario en la base de datos
     usuario = Usuario.query.get(user_id)
     if not usuario:
-        return jsonify({'error': 'Usuario no encontrado'}), 404 
+        return jsonify({'error': 'Usuario no encontrado'}), 404
 
+    # Retornar la información del perfil del usuario
     return jsonify({
         'id': usuario.id,
         'correo': usuario.correo,
