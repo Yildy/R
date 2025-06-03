@@ -1,0 +1,5 @@
+[build]
+builder = "null"
+
+[start]
+cmd = "gunicorn app:app"
