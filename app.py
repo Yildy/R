@@ -8,7 +8,7 @@ from routes.publicaciones import  publicaciones
 from routes.comentarios import comentarios
 from routes.reacciones import reacciones
 from routes.datos_personales import datos_personales_new_bp
-
+import os
 
 app = Flask(__name__)
 
@@ -22,7 +22,7 @@ app.register_blueprint(publicaciones)
 app.register_blueprint(comentarios)
 app.register_blueprint(reacciones)
 app.register_blueprint(datos_personales_new_bp)
-import os
+
 
 with app.app_context():
     db.create_all()  # Esto asegura que todas las tablas se creen si es necesario
