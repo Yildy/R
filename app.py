@@ -23,6 +23,7 @@ app.register_blueprint(comentarios)
 app.register_blueprint(reacciones)
 app.register_blueprint(datos_personales_new_bp)
 
+
 with app.app_context():
     db.create_all()  # Esto asegura que todas las tablas se creen si es necesario
 
