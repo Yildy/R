@@ -8,6 +8,7 @@ from routes.publicaciones import  publicaciones
 from routes.comentarios import comentarios
 from routes.reacciones import reacciones
 from routes.datos_personales import datos_personales_new_bp
+import os
 
 app = Flask(__name__)
 
@@ -26,4 +27,5 @@ with app.app_context():
     db.create_all()  # Esto asegura que todas las tablas se creen si es necesario
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
