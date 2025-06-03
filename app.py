@@ -22,9 +22,11 @@ app.register_blueprint(publicaciones)
 app.register_blueprint(comentarios)
 app.register_blueprint(reacciones)
 app.register_blueprint(datos_personales_new_bp)
+import os
 
 with app.app_context():
     db.create_all()  # Esto asegura que todas las tablas se creen si es necesario
 
 if __name__ == "__main__":
-    app.run
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
