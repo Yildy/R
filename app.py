@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from config import init_app, db
 from routes.login import acceso
 from routes.centros_reciclaje import centros_reciclaje_bp
@@ -11,6 +12,8 @@ from routes.datos_personales import datos_personales_new_bp
 import os
 
 app = Flask(__name__)
+
+CORS(app)
 
 init_app(app)
 
