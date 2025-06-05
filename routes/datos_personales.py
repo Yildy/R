@@ -1,11 +1,52 @@
 from flask import Blueprint, request, jsonify
 from models.usuarios import Usuario
 from models.datos_personales import DatosPersonales
-from config import db
+from config import db, bcrypt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 
-datos_personales_new_bp = Blueprint('datos_personales_new', __name__)
+datos_personales_new_bp = Blueprint('datos_personales', __name__)
+
+@datos_personales_new_bp.route('/datos_personales/registro', methods=['POST'])
+def registrar_usuario_con_datos_personales():
+    data = request.get_json()
+
+    # Datos para el modelo Usuario
+    correo = data.get('correo')
+    contraseña = data.get('contraseña')
+    nombre_usuario = data.get('nombre_usuario')
+
+    # Datos para el modelo DatosPersonales
+    nombre = data.get('nombre')
+    apellido = data.get('apellido')
+    telefono = data.get('telefono')
+    fecha_nacimiento = data.get('fecha_nacimiento')
+
+    # Validaciones
+    if not correo or not contraseña or not nombre_usuario or not nombre or not apellido:
+        return jsonify({'error': 'Faltan campos obligatorios'}), 400
+
+    if Usuario.query.filter_by(correo=correo).first():
+        return jsonify({'error': 'Correo ya registrado'}), 400
+
+    # Crear el usuario
+    hash_contraseña = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+    nuevo_usuario = Usuario(correo=correo, contraseña=hash_contraseña, nombre_usuario=nombre_usuario)
+    db.session.add(nuevo_usuario)
+    db.session.commit()
+
+    # Crear los datos personales
+    datos_personales = DatosPersonales(
+        usuario_id=nuevo_usuario.id,
+        nombre=nombre,
+        apellido=apellido,
+        telefono=telefono,
+        fecha_nacimiento=fecha_nacimiento
+    )
+    db.session.add(datos_personales)
+    db.session.commit()
+
+    return jsonify({'mensaje': 'Usuario registrado con datos personales correctamente'}), 201
 
 @datos_personales_new_bp.route('/datos_personales/new', methods=['POST'])
 @jwt_required()
