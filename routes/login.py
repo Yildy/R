@@ -9,10 +9,10 @@ acceso = Blueprint('login', __name__)
 def login_usuario():
     data = request.get_json()
     correo = data.get('correo')
-    contraseña = data.get('contraseña')
+    contrasena = data.get('contraseña')
 
     usuario = Usuario.query.filter_by(correo=correo).first()
-    if not usuario or not bcrypt.check_password_hash(usuario.contraseña, contraseña):
+    if not usuario or not bcrypt.check_password_hash(usuario.contrasena, contrasena):
         return jsonify({'error': 'Credenciales inválidas'}), 401
 
     access_token = create_access_token(identity=str(usuario.id))
@@ -30,17 +30,17 @@ def login_usuario():
 def registrar_usuario():
     data = request.get_json()
     correo = data.get('correo')
-    contraseña = data.get('contraseña')
+    contrasena = data.get('contraseña')
     nombre_usuario = data.get('nombre_usuario')
 
-    if not correo or not contraseña or not nombre_usuario:
+    if not correo or not contrasena or not nombre_usuario:
         return jsonify({'error': 'Faltan campos'}), 400
 
     if Usuario.query.filter_by(correo=correo).first():
         return jsonify({'error': 'Correo ya registrado'}), 400
 
-    hash_contraseña = bcrypt.generate_password_hash(contraseña).decode('utf-8')
-    nuevo_usuario = Usuario(correo=correo, contraseña=hash_contraseña, nombre_usuario=nombre_usuario)
+    hash_contrasena = bcrypt.generate_password_hash(contrasena).decode('utf-8')
+    nuevo_usuario = Usuario(correo=correo, contraseña=hash_contrasena, nombre_usuario=nombre_usuario)
     db.session.add(nuevo_usuario)
     db.session.commit()
 
@@ -79,7 +79,7 @@ def actualizar_usuario():
     if 'nombre_usuario' in data:
         usuario.nombre_usuario = data['nombre_usuario']
     if 'contraseña' in data:
-        usuario.contraseña = bcrypt.generate_password_hash(data['contraseña']).decode('utf-8')
+        usuario.contrasena = bcrypt.generate_password_hash(data['contraseña']).decode('utf-8')
 
     db.session.commit()
     return jsonify({'mensaje': 'Usuario actualizado correctamente'}), 200
