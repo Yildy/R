@@ -7,7 +7,7 @@ bcrypt = Bcrypt()
 jwt = JWTManager()
 
 def init_app(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:UhFFehPKXmKYjIFfSMmRJatysgiVQqpu@gondola.proxy.rlwy.net:11416/railway'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:DAdqLfsRuWoeoyOJXIZlyjWMUArcVMqK@caboose.proxy.rlwy.net:12838/railway'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = 'ResiduosRed_1'
     app.config['JWT_TOKEN_LOCATION'] = ['headers']
