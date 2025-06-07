@@ -40,7 +40,7 @@ def registrar_usuario():
         return jsonify({'error': 'Correo ya registrado'}), 400
 
     hash_contrasena = bcrypt.generate_password_hash(contrasena).decode('utf-8')
-    nuevo_usuario = Usuario(correo=correo, contraseña=hash_contrasena, nombre_usuario=nombre_usuario)
+    nuevo_usuario = Usuario(correo=correo, contrasena=hash_contrasena, nombre_usuario=nombre_usuario)
     db.session.add(nuevo_usuario)
     db.session.commit()
 
@@ -79,7 +79,7 @@ def actualizar_usuario():
     if 'nombre_usuario' in data:
         usuario.nombre_usuario = data['nombre_usuario']
     if 'contraseña' in data:
-        usuario.contrasena = bcrypt.generate_password_hash(data['contraseña']).decode('utf-8')
+        usuario.contrasena = bcrypt.generate_password_hash(data['contrasena']).decode('utf-8')
 
     db.session.commit()
     return jsonify({'mensaje': 'Usuario actualizado correctamente'}), 200
