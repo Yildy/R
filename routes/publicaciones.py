@@ -3,22 +3,41 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from config import db
 from models.publicaciones import Publicacion
 from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'uploads'  # Carpeta donde se guardarán las imágenes
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}  # Tipos de archivos permitidos
 
 publicaciones = Blueprint('publicaciones', __name__)
+publicaciones.config = {'UPLOAD_FOLDER': UPLOAD_FOLDER}
+
+# Función para verificar extensiones permitidas
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @publicaciones.route('/publicaciones', methods=['POST'])
 @jwt_required()
 def crear_publicacion():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = request.form  # Usar request.form para datos de texto
     contenido = data.get('contenido')
-    tipo = data.get('tipo', 'queja')  
-    imageurl = data.get('imageurl')
+    tipo = data.get('tipo', 'queja')
+    file = request.files.get('image')  # Obtener el archivo de imagen
 
     if not contenido:
         return jsonify({'error': 'El contenido de la publicación es obligatorio'}), 400
-    if not imageurl:
-        return jsonify({'error': 'La URL de la imagen es obligatoria'}), 400
+    if not file or not allowed_file(file.filename):
+        return jsonify({'error': 'La imagen es obligatoria y debe ser un archivo válido'}), 400
+
+    # Crear la carpeta de uploads si no existe
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
+    # Guardar la imagen en el servidor
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(filepath)
 
     if tipo not in ['queja', 'educativo']:
         return jsonify({'error': 'El tipo de publicación debe ser "queja" o "educativo"'}), 400
@@ -28,7 +47,7 @@ def crear_publicacion():
         contenido=contenido,
         fecha=datetime.utcnow(),
         tipo=tipo,
-        imageurl=imageurl
+        imageurl=filepath  # Guardar la ruta de la imagen en la base de datos
     )
     db.session.add(nueva_publicacion)
     db.session.commit()
@@ -37,9 +56,9 @@ def crear_publicacion():
 
 @publicaciones.route('/publicaciones', methods=['GET'])
 def obtener_publicaciones():
-    publicaciones = Publicacion.query.all()
+    lista_publicaciones = Publicacion.query.all()
     resultados = []
-    for publicacion in publicaciones:
+    for publicacion in lista_publicaciones:
         resultados.append({
             'id': publicacion.id,
             'usuario_id': publicacion.usuario_id,
