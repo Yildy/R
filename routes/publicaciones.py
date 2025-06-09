@@ -47,7 +47,7 @@ def crear_publicacion():
         contenido=contenido,
         fecha=datetime.utcnow(),
         tipo=tipo,
-        imageurl=filepath  # Guardar la ruta de la imagen en la base de datos
+        imageurl=filename  # Guardar la ruta de la imagen en la base de datos
     )
     db.session.add(nueva_publicacion)
     db.session.commit()
