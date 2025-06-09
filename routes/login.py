@@ -95,3 +95,11 @@ def eliminar_usuario():
     db.session.delete(usuario)
     db.session.commit()
     return jsonify({'mensaje': 'Usuario eliminado correctamente'}), 200
+
+@acceso.route('/usuario/<int:usuario_id>', methods=['GET'])
+def obtener_nombre_usuario(usuario_id):
+    usuario = Usuario.query.get(usuario_id)
+    if not usuario:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    return jsonify({'nombre_usuario': usuario.nombre_usuario}), 200
