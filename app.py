@@ -10,6 +10,7 @@ from routes.comentarios import comentarios
 from routes.reacciones import reacciones
 from routes.datos_personales import datos_personales_new_bp
 import os
+from flask import send_from_directory
 
 app = Flask(__name__)
 
@@ -26,6 +27,9 @@ app.register_blueprint(comentarios)
 app.register_blueprint(reacciones)
 app.register_blueprint(datos_personales_new_bp)
 
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('uploads', filename)
 
 with app.app_context():
     db.create_all()  # Esto asegura que todas las tablas se creen si es necesario
