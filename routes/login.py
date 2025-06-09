@@ -78,7 +78,7 @@ def actualizar_usuario():
         usuario.correo = data['correo']
     if 'nombre_usuario' in data:
         usuario.nombre_usuario = data['nombre_usuario']
-    if 'contraseña' in data:
+    if 'contrasena' in data:
         usuario.contrasena = bcrypt.generate_password_hash(data['contrasena']).decode('utf-8')
 
     db.session.commit()
